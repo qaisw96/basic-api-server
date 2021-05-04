@@ -23,21 +23,26 @@ class Food {
         return record;
     }
 
-    update(obj) {
-        this.db.forEach(element => {
-            if(record.id == obj.id) {
-                element.record = obj
-                return element
+    update(id, obj) {
+        for (let i=0; i< this.db.length; i++) {
+            if (this.db[i].id == id) {
+                this.db[i].record = obj;
+                return this.db[i];
             }
-        })
-    }
+        }
+     }
 
     delete(id) {
-        this.db = this.db.filter(element => {
-            if(element.id !== id ) {
-                return element
+        let deleted = false;
+        this.db = this.db.filter(record => {
+            if(record.id !== id) {
+                return true
+            } else {
+                deleted = true
+                return false
             }
         })
+        return deleted;
     }
 }
 

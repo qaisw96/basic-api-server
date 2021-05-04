@@ -18,7 +18,7 @@ router.delete('/food/:id', deleteFood);
 function getAllFoods(req, res) {    
     let records = foodInstance.get()
     res.status(200).json(records)
-
+    
 }
 
 function getOneFood(req, res) {   
@@ -30,22 +30,26 @@ function getOneFood(req, res) {
 
 function createFood(req, res) {  
     let obj = req.body;
-    console.log(req);
 
     let createdObj = foodInstance.create(obj);
     res.status(201).json(createdObj);
   }
 
 function updateFood(req, res) {
-    let obj = req.body
-    let updateFood = foodInstance.update(obj)
-    res.status(200).json(updateFood);
+    console.log(req.body);
+    let id = parseInt(req.params.id);
+    const record = req.body;
+    let updatedFood = foodInstance.update(id, record);
+    res.status(200).json(updatedFood);
 
 }
 
-function deleteFood(req, res) {    
+function deleteFood(req, res) {   
+    let id = parseInt(req.params.id);
+    let deletedFood = foodInstance.delete(id); 
+    res.json(deletedFood)
 
 }
 
 
-module.exports = router
+module.exports = router;
