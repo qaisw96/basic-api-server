@@ -46,4 +46,14 @@ class Food {
     }
 }
 
-module.exports = Food;
+
+// create subClass is called Clothes from Food Class
+class Clothes extends Food {
+    
+}
+
+// export two classes
+module.exports = {
+    Food,
+    Clothes
+}
