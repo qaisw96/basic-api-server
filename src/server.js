@@ -11,8 +11,14 @@ app.use(express.json());
 
 
 // require routes 
-const foodRouter = require('./routes/food.js')
-app.use(foodRouter)
+const routerPage = require('./routes/food.js')
+const foodRouter = routerPage.router
+
+// Middleware function to check what route is used by user
+app.use(routerPage.checkRoutes)
+
+app.use('/food',foodRouter)
+app.use('/clothes',foodRouter)
 
 // middleware function 
 app.use('*', notFoundError);
