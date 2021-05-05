@@ -1,43 +1,52 @@
 'use strict';
 
-const server = require('../src/server.js')
+const server = require('../src/server.js');
 
 const superTest = require('supertest');
 const mockServer = superTest(server.app)
+const testObj1 = {"meal": "salad", "type": "vegetarian"}
+const testObj2 = {"meal": "tona", "type": "fish"}
 
 describe('Check REST status and Returned data', () =>{
     it('Create a record using POST', async () => {
-        let resPost = await mockServer.post('/food').send({"meal": "salad", "type": "healthy"})
+        let resPost = await mockServer.post('/food').send(testObj1)
+        resPost = await mockServer.post('/food').send(testObj2)
 
-        expect(resPost.body.record.meal).toEqual('salad')
+        expect(resPost.body.record).toEqual(testObj2)
         expect(resPost.status).toEqual(201)
         
+    })
+
+    it('Read a list of records using GET', async () => {
+        let resGetAll = await mockServer.get('/food')
+        
+        expect(resGetAll.body[0].record).toEqual(testObj1)
+        expect(resGetAll.body[1].record).toEqual(testObj2)
+        expect(resGetAll.status).toEqual(200)
 
     })
 
-    // it('Read a list of records using GET', async () => {
-    //     let resPost = await mockServer.post('/food').send({"meal": "salad", "type": "healthy"}, {"meal": "tona", "type": "fish"})
-    //     let res = await mockServer.get('/food')
-    //     expect(res.body).toEqual([
-    //         { id: 1, record: { meal: 'salad', type: 'healthy' } },
-    //         { id: 2, record: { meal: 'tona', type: 'fish' } }
-    //       ])
-    // })
+    it('Read a record using GET', async () => {
+        let resGetOne = await mockServer.get('/food/2')
 
-    // it('Read a record using GET', async () => {
-    //     let res = await mockServer.get('/food/:id')
-    //     console.log(res.body);
-    //     res.params.id = 1
-    //     expect(res.body[res.params.id ].record).toEqual({"meal": "salad", "type": "healthy"})
-    //     expect(res.status).toEqual(200)
+        expect(resGetOne.body.record).toEqual(testObj2)
+        expect(resGetOne.status).toEqual(200)
+    })
 
-    // })
+    it('Update a record using PUT', async () => {
+        const updatedObj = {"meal": "chicken", "type": "Meat"}
+        let resUpdate = await mockServer.put('/food/1').send(updatedObj)
 
+        expect(resUpdate.body.record).toEqual(updatedObj)
+    } )
 
-    // it('Update a record using PUT', async () => {
-    //     let res = await mockServer.put('/food/:id').send({"mea4444455": "salad", "type": "healthy"})
-
-    //     console.log("put", res.request);
-    //     expect(res.body).toEqual({ "meal44444": "salad", "type": "healthy" })
-    // } )
+    it('Delete a record using DELETE', async () => {
+        // test if route is exist
+        let resDelete = await mockServer.delete('/food/2')
+        expect(resDelete.body).toEqual(true)
+        // test if route does not exist
+        resDelete = await mockServer.delete('/food/22')
+        expect(resDelete.body).toEqual(false)
+        
+    } )
 })
